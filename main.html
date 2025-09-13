@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps-GPT - Log Analyzer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333; 
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .header h1 { 
+            font-size: 2em; 
+            margin-bottom: 8px; 
+        }
+        
+        .header p { 
+            font-size: 1em; 
+            opacity: 0.9; 
+        }
+        
+        .content { 
+            padding: 25px; 
+        }
+        
+        .section { 
+            margin-bottom: 20px; 
+        }
+        
+        .section h2 { 
+            color: #2c3e50; 
+            margin-bottom: 12px; 
+            font-size: 1.3em;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 5px;
+        }
+        
+        .input-group { 
+            margin-bottom: 15px; 
+        }
+        
+        label { 
+            display: block; 
+            margin-bottom: 5px; 
+            font-weight: bold; 
+            color: #34495e; 
+        }
+        
+        textarea, input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #ecf0f1; 
+            border-radius: 6px; 
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus, input:focus { 
+            outline: none; 
+            border-color: #3498db; 
+        }
+        
+        .button-group { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn { 
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            font-weight: bold;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+        
+        .btn-primary { 
+            background: #3498db; 
+            color: white; 
+        }
+        
+        .btn-primary:hover { 
+            background: #2980b9; 
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary { 
+            background: #95a5a6; 
+            color: white; 
+        }
+        
+        .btn-secondary:hover { 
+            background: #7f8c8d; 
+        }
+        
+        .btn-success { 
+            background: #27ae60; 
+            color: white; 
+        }
+        
+        .btn-success:hover { 
+            background: #229954; 
+        }
+        
+        .loading { 
+            display: none; 
+            text-align: center; 
+            margin: 20px 0;
+            color: #3498db;
+            font-size: 16px;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .results { 
+            margin-top: 25px; 
+            display: none;
+        }
+        
+        .result-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .status-healthy { border-left-color: #27ae60; }
+        .status-warning { border-left-color: #f39c12; }
+        .status-error { border-left-color: #e74c3c; }
+        .status-critical { border-left-color: #c0392b; }
+        
+        .result-title { 
+            font-weight: bold; 
+            color: #2c3e50; 
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+        
+        .result-content { 
+            color: #34495e; 
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        
+        .log-type-badge {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 8px;
+            text-transform: uppercase;
+        }
+        
+        .security { background: #e74c3c; }
+        .web { background: #f39c12; }
+        .application { background: #9b59b6; }
+        .system { background: #34495e; }
+        .general { background: #95a5a6; }
+        
+        .metric { 
+            display: inline-block; 
+            margin: 3px 8px 3px 0; 
+            padding: 3px 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .issue-list {
+            background: white;
+            border: 1px solid #ecf0f1;
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .issue-item {
+            padding: 5px 0;
+            border-bottom: 1px solid #ecf0f1;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #2c3e50;
+        }
+        
+        .issue-item:last-child { 
+            border-bottom: none; 
+        }
+        
+        .recommendation {
+            background: #e8f5e8;
+            border: 1px solid #d4edda;
+            border-radius: 4px;
+            padding: 8px;
+            margin: 4px 0;
+            color: #155724;
+            font-size: 13px;
+        }
+        
+        .fix {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 8px;
+            margin: 4px 0;
+            color: #856404;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        
+        .quick-examples {
+            background: #f8f9fa;
+            border: 1px solid #ecf0f1;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+        
+        .example-btn {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 12px;
+            display: inline-block;
+        }
+        
+        .example-btn:hover {
+            background: #e9ecef;
+            border-color: #3498db;
+        }
+        
+        .error { 
+            color: #e74c3c; 
+            background: #fdf2f2; 
+            padding: 12px; 
+            border-radius: 4px; 
+            margin: 10px 0;
+            border-left: 4px solid #e74c3c;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 DevOps-GPT</h1>
+            <p>Universal Log Analyzer</p>
+        </div>
+        
+        <div class="content">
+            <!-- Input Section -->
+            <div class="section">
+                <h2>📋 Analyze Your Logs</h2>
+                
+                <div class="input-group">
+                    <label for="logs">Paste your logs here:</label>
+                    <textarea id="logs" rows="10" placeholder="Paste your logs here... (Security, Web, Application, System - any format)
+
+The system will automatically detect the log type and provide relevant analysis."></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="context">Context (optional):</label>
+                    <input type="text" id="context" placeholder="Brief description of your logs">
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="analyzeLogs()">🔍 Analyze</button>
+                    <button class="btn btn-success" onclick="simulateFailure()">🧪 Try Sample</button>
+                    <button class="btn btn-secondary" onclick="clearAll()">🗑️ Clear</button>
+                </div>
+            </div>
+
+            <!-- Quick Examples -->
+            <div class="section">
+                <h2>📖 Quick Examples</h2>
+                <div class="quick-examples">
+                    <strong>Click to load example logs:</strong><br><br>
+                    <button class="example-btn" onclick="loadExample('security')">🔐 Security Logs</button>
+                    <button class="example-btn" onclick="loadExample('web')">🌐 Web Server</button>
+                    <button class="example-btn" onclick="loadExample('application')">⚙️ Application</button>
+                    <button class="example-btn" onclick="loadExample('system')">🖥️ System</button>
+                </div>
+            </div>
+            
+            <!-- Loading -->
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Analyzing logs...</p>
+            </div>
+            
+            <!-- Results -->
+            <div id="results" class="results"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function displayError(message) {
+            hideLoading();
+            document.getElementById('results').innerHTML = `
+                <div class="error">
+                    <strong>❌ Error:</strong> ${message}
+                </div>
+            `;
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function displayResults(data) {
+            hideLoading();
+            
+            if (!data.success || !data.analysis) {
+                displayError(data.message || 'Analysis failed');
+                return;
+            }
+
+            const analysis = data.analysis;
+            const statusClass = `status-${analysis.status.toLowerCase()}`;
+            const logTypeBadge = analysis.log_type || 'general';
+            
+            let resultsHtml = `
+                <div class="result-section ${statusClass}">
+                    <div class="result-title">
+                        📊 Analysis Summary
+                        <span class="log-type-badge ${logTypeBadge}">${logTypeBadge}</span>
+                    </div>
+                    <div class="result-content">
+                        <div><strong>Status:</strong> ${analysis.status} (${analysis.severity} severity)</div>
+                        <div><strong>Confidence:</strong> ${Math.round(analysis.confidence * 100)}%</div>
+                        <div><strong>Log Type:</strong> ${(analysis.log_type || 'general').toUpperCase()}</div>
+                    </div>
+                </div>
+            `;
+
+            // Summary metrics
+            if (analysis.summary) {
+                resultsHtml += `
+                    <div class="result-section">
+                        <div class="result-title">📈 Metrics</div>
+                        <div class="result-content">
+                `;
+                
+                Object.entries(analysis.summary).forEach(([key, value]) => {
+                    if (typeof value === 'number' || typeof value === 'string') {
+                        resultsHtml += `<span class="metric"><strong>${key.replace(/_/g, ' ')}:</strong> ${value}</span>`;
+                    }
+                });
+                
+                resultsHtml += `</div></div>`;
+            }
+
+            // Issues
+            if (analysis.issues) {
+                resultsHtml += `<div class="result-section">
+                    <div class="result-title">⚠️ Issues Found</div>
+                    <div class="result-content">`;
+                
+                Object.entries(analysis.issues).forEach(([type, issues]) => {
+                    if (Array.isArray(issues) && issues.length > 0) {
+                        resultsHtml += `
+                            <div><strong>${type.toUpperCase()}:</strong></div>
+                            <div class="issue-list">
+                        `;
+                        issues.slice(0, 5).forEach(issue => {
+                            resultsHtml += `<div class="issue-item">${issue}</div>`;
+                        });
+                        resultsHtml += `</div>`;
+                    }
+                });
+                
+                resultsHtml += `</div></div>`;
+            }
+
+            // Recommendations
+            if (analysis.recommendations && analysis.recommendations.length > 0) {
+                resultsHtml += `
+                    <div class="result-section">
+                        <div class="result-title">💡 Recommendations</div>
+                        <div class="result-content">
+                `;
+                analysis.recommendations.slice(0, 5).forEach(rec => {
+                    resultsHtml += `<div class="recommendation">${rec}</div>`;
+                });
+                resultsHtml += `</div></div>`;
+            }
+
+            // Technical fixes
+            if (analysis.fixes && analysis.fixes.length > 0) {
+                resultsHtml += `
+                    <div class="result-section">
+                        <div class="result-title">🔧 Technical Fixes</div>
+                        <div class="result-content">
+                `;
+                analysis.fixes.slice(0, 5).forEach(fix => {
+                    resultsHtml += `<div class="fix">${fix}</div>`;
+                });
+                resultsHtml += `</div></div>`;
+            }
+
+            document.getElementById('results').innerHTML = resultsHtml;
+            document.getElementById('results').style.display = 'block';
+        }
+
+        async function analyzeLogs() {
+            const logs = document.getElementById('logs').value.trim();
+            const context = document.getElementById('context').value.trim();
+
+            if (!logs) {
+                displayError('Please enter some logs to analyze');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const response = await fetch(`${API_BASE}/analyze-logs-raw`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        logs: logs,
+                        context: context || null
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                displayResults(data);
+
+            } catch (error) {
+                console.error('Analysis error:', error);
+                displayError(`Failed to analyze logs: ${error.message}`);
+            }
+        }
+
+        async function simulateFailure() {
+            showLoading();
+
+            try {
+                const response = await fetch(`${API_BASE}/simulate-failure`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Update the textarea with simulated logs
+                document.getElementById('logs').value = data.logs.join('\n');
+                document.getElementById('context').value = 'Sample multi-type failure logs';
+                
+                // Display the analysis results
+                if (data.analysis) {
+                    displayResults({
+                        success: true,
+                        analysis: data.analysis,
+                        processed_logs: data.logs.length,
+                        message: "Sample analysis completed"
+                    });
+                    
+                    // Add sample info
+                    const resultsDiv = document.getElementById('results');
+                    resultsDiv.innerHTML = `
+                        <div style="background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                            🧪 <strong>Sample Analysis:</strong> Multi-type log analysis demo (application, web, security, system)
+                        </div>
+                    ` + resultsDiv.innerHTML;
+                } else {
+                    displayError('Sample completed but no analysis available');
+                }
+            } catch (error) {
+                console.error('Sample error:', error);
+                displayError(`Failed to load sample: ${error.message}`);
+            }
+        }
+
+        function loadExample(type) {
+            const examples = {
+                security: `Jan 15 10:30:01 server sshd[1234]: authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.1.100 user=root
+Jan 15 10:30:05 server sshd[1235]: Failed password for root from 192.168.1.100 port 22 ssh2
+Jan 15 10:30:10 server sshd[1236]: authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.1.100 user=admin
+Jan 15 10:30:15 server sshd[1237]: Failed password for admin from 192.168.1.100 port 22 ssh2`,
+                
+                web: `127.0.0.1 - - [15/Jan/2024:10:30:01 +0000] "GET /api/users HTTP/1.1" 200 1234
+192.168.1.100 - - [15/Jan/2024:10:30:15 +0000] "POST /api/login HTTP/1.1" 500 0
+192.168.1.100 - - [15/Jan/2024:10:30:16 +0000] "GET /api/data HTTP/1.1" 404 0
+[ERROR] Database connection timeout after 30 seconds
+[ERROR] Failed to process request: Internal server error`,
+                
+                application: `2024-01-15 10:30:15 [INFO] Starting deployment process...
+2024-01-15 10:30:47 [ERROR] Container failed to start
+2024-01-15 10:30:47 [CRITICAL] Port 8080 already in use by process 1234
+2024-01-15 10:30:47 [ERROR] bind: address already in use
+2024-01-15 10:30:50 [INFO] Rolling back deployment...`,
+                
+                system: `Jan 15 10:30:01 server systemd[1]: mysql.service: Main process exited, code=exited, status=1/FAILURE
+Jan 15 10:30:05 server kernel: [12345.678] Out of memory: Kill process 1234 (java) score 900
+Jan 15 10:30:10 server systemd[1]: Failed to start Apache HTTP Server
+Jan 15 10:30:15 server kernel: [12350.123] disk full`
+            };
+
+            const contexts = {
+                security: 'SSH authentication monitoring',
+                web: 'Web server error analysis',
+                application: 'Application deployment logs',
+                system: 'System service monitoring'
+            };
+
+            document.getElementById('logs').value = examples[type];
+            document.getElementById('context').value = contexts[type];
+        }
+
+        function clearAll() {
+            document.getElementById('logs').value = '';
+            document.getElementById('context').value = '';
+            document.getElementById('results').style.display = 'none';
+            hideLoading();
+        }
+
+        // Auto-resize textarea
+        document.getElementById('logs').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 300) + 'px';
+        });
+    </script>
+</body>
+</html>
