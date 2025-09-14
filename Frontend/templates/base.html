@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DevOps-GPT{% endblock %}</title>
+
+    <!-- CSS -->
+    <link href="/static/css/main.css" rel="stylesheet">
+    <link href="/static/css/dashboard.css" rel="stylesheet">
+    <link href="/static/css/components.css" rel="stylesheet">
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-robot"></i>
+                <span>DevOps-GPT</span>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="/logs" class="nav-link"><i class="fas fa-file-alt"></i> Logs</a>
+                <a href="/pipelines" class="nav-link"><i class="fas fa-code-branch"></i> Pipelines</a>
+            </div>
+            <div class="nav-status">
+                <span id="connection-status" class="status-indicator">
+                    <i class="fas fa-circle"></i> Connected
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 DevOps-GPT - AI-Powered DevOps Automation</p>
+            <div class="footer-links">
+                <a href="/api/docs">API Docs</a>
+                <a href="https://github.com/your-repo/devops-gpt">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Core JavaScript -->
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/websocket.js"></script>
+    <script src="/static/js/api.js"></script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>
