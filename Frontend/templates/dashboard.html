@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}DevOps-GPT Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Status Overview -->
+    <section class="status-overview">
+        <h2><i class="fas fa-chart-line"></i> System Overview</h2>
+        <div class="status-grid">
+            <div class="status-card">
+                <div class="status-icon">
+                    <i class="fas fa-server"></i>
+                </div>
+                <div class="status-info">
+                    <h3>Infrastructure</h3>
+                    <span id="infrastructure-status" class="status-value">Healthy</span>
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <div class="status-icon">
+                    <i class="fas fa-code-branch"></i>
+                </div>
+                <div class="status-info">
+                    <h3>Pipelines</h3>
+                    <span id="pipeline-status" class="status-value">Running</span>
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <div class="status-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <div class="status-info">
+                    <h3>Deployments</h3>
+                    <span id="deployment-count" class="status-value">0</span>
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <div class="status-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="status-info">
+                    <h3>Alerts</h3>
+                    <span id="alert-count" class="status-value">0</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Real-time Metrics -->
+    <section class="metrics-section">
+        <div class="metrics-container">
+            <div class="metric-chart">
+                <h3>System Health Score</h3>
+                <canvas id="healthChart"></canvas>
+            </div>
+            <div class="metric-chart">
+                <h3>Deployment Frequency</h3>
+                <canvas id="deploymentChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Activity Feed -->
+    <section class="activity-section">
+        <h3><i class="fas fa-stream"></i> Live Activity</h3>
+        <div class="activity-feed" id="activity-feed">
+            <!-- Real-time activities will be populated here -->
+        </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="actions-section">
+        <h3><i class="fas fa-tools"></i> Quick Actions</h3>
+        <div class="action-buttons">
+            <button class="action-btn" onclick="triggerAnalysis()">
+                <i class="fas fa-search"></i> Analyze Logs
+            </button>
+            <button class="action-btn" onclick="checkPipelineHealth()">
+                <i class="fas fa-heartbeat"></i> Health Check
+            </button>
+            <button class="action-btn" onclick="triggerDeployment()">
+                <i class="fas fa-rocket"></i> Deploy
+            </button>
+            <button class="action-btn emergency" onclick="emergencyRollback()">
+                <i class="fas fa-undo"></i> Emergency Rollback
+            </button>
+        </div>
+    </section>
+
+    <!-- AI Recommendations -->
+    <section class="recommendations-section">
+        <h3><i class="fas fa-robot"></i> AI Recommendations</h3>
+        <div id="ai-recommendations" class="recommendations-container">
+            <div class="loading">Loading AI insights...</div>
+        </div>
+    </section>
+</div>
+
+<!-- Log Analysis Modal -->
+<div id="logModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-file-alt"></i> Log Analysis</h3>
+            <span class="close" onclick="closeModal('logModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <textarea id="logInput" placeholder="Paste your logs here..."></textarea>
+            <button onclick="analyzeLogsFromModal()" class="analyze-btn">
+                <i class="fas fa-cog fa-spin" id="analyzeSpinner" style="display: none;"></i>
+                Analyze with AI
+            </button>
+            <div id="analysisResults" class="analysis-results"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/dashboard.js"></script>
+<script>
+    // Initialize dashboard when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        const dashboard = new DevOpsGPTDashboard();
+        dashboard.initialize();
+    });
+</script>
+{% endblock %}
