@@ -1,0 +1,191 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* DevOps-GPT Design System - Professional Dark Theme */
+
+@layer base {
+  :root {
+    /* DevOps Color Palette */
+    --background: 222 22% 5%;
+    --foreground: 210 40% 95%;
+
+    --card: 222 22% 8%;
+    --card-foreground: 210 40% 95%;
+
+    --popover: 222 22% 8%;
+    --popover-foreground: 210 40% 95%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 22% 5%;
+
+    --secondary: 222 22% 12%;
+    --secondary-foreground: 210 40% 85%;
+
+    --muted: 222 22% 10%;
+    --muted-foreground: 210 20% 65%;
+
+    --accent: 142 76% 36%;
+    --accent-foreground: 210 40% 95%;
+
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 210 40% 95%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 210 40% 95%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 222 22% 5%;
+
+    --info: 217 91% 60%;
+    --info-foreground: 222 22% 5%;
+
+    --border: 222 22% 15%;
+    --input: 222 22% 12%;
+    --ring: 217 91% 60%;
+
+    --radius: 0.75rem;
+
+    /* DevOps Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(142 76% 36%));
+    --gradient-card: linear-gradient(145deg, hsl(222 22% 8%), hsl(222 22% 10%));
+    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 45%));
+    --gradient-error: linear-gradient(135deg, hsl(0 72% 55%), hsl(0 72% 45%));
+    --gradient-warning: linear-gradient(135deg, hsl(38 92% 50%), hsl(38 92% 60%));
+
+    /* DevOps Shadows */
+    --shadow-card: 0 4px 6px -1px hsl(222 22% 3% / 0.3), 0 2px 4px -1px hsl(222 22% 3% / 0.15);
+    --shadow-elevated: 0 10px 15px -3px hsl(222 22% 3% / 0.4), 0 4px 6px -2px hsl(222 22% 3% / 0.2);
+    --shadow-glow: 0 0 20px hsl(217 91% 60% / 0.3);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  /* DevOps Component Styles */
+  .dashboard-card {
+    @apply bg-card border border-border rounded-lg shadow-[var(--shadow-card)] backdrop-blur-sm;
+  }
+
+  .status-badge {
+    @apply px-2 py-1 rounded-full text-xs font-medium;
+  }
+
+  .status-success {
+    @apply bg-success/20 text-success border border-success/30;
+  }
+
+  .status-warning {
+    @apply bg-warning/20 text-warning border border-warning/30;
+  }
+
+  .status-error {
+    @apply bg-destructive/20 text-destructive border border-destructive/30;
+  }
+
+  .status-info {
+    @apply bg-info/20 text-info border border-info/30;
+  }
+
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+
+  .transition-bounce {
+    transition: var(--transition-bounce);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  /* Custom scrollbar for logs */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-muted/20;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-primary/30 rounded-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary/50;
+  }
+}
