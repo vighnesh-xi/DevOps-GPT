@@ -4,4 +4,3 @@ python-multipart==0.0.19
 python-dotenv==1.0.1
 mistralai==1.0.1
 requests
-PyGithub>=1.73,<2.0
